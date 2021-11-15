@@ -18,7 +18,7 @@ public class ManagerManager : MonoBehaviour
     [SerializeField] GameObject managerObj;
     Canvas currentGUI = null;
 
-
+// Finaly only 2 Manager still usefull here 
     void Awake()
     {
         //Saver.LoadImportant();
@@ -78,7 +78,4 @@ public class ManagerManager : MonoBehaviour
         //Instantiate(wiseObject, transform.parent);
     }
 
-    void Start()
-    {
-    }
 }
