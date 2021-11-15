@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// i didn't make Ragdoll, but its use many time
+
+
 public class Ragdoll : MonoBehaviour
 {
     Character character;
