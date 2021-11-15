@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+
 public enum ANIMATION_STATE
 {
     IDLE,
@@ -15,6 +16,7 @@ public enum ANIMATION_STATE
     SPELL3,
     SPELL4
 }
+
 public enum CLASSES
 {
     ASSASSIN = 1 << 0,
@@ -29,6 +31,7 @@ public enum CHARACTER_STATE
     FIGHT,
     LOCKED
 }
+
 public enum CHARACTER_HOSTILITY
 {
     ALLY,
@@ -36,6 +39,7 @@ public enum CHARACTER_HOSTILITY
     ENEMY
 }
 
+// small class to help manage Item in the Inventory
 public class ItemInventory
 {
     public static Pickable emptyPickable = null;
@@ -151,14 +155,14 @@ public class Character : Entity
     [SerializeField] bool mobilityMov = true;
     Fight currentFight;
 
-    //For SkillTree
+    //to SkillTree
     public int[] spellUpgrade = new int[4];
     public int availableSkillTreePoints = 100;
     //
 
     public bool AutoSpellCasting { get => autoSpellCasting; set => autoSpellCasting = value; }
 
-    // Reseau
+    // Reseau // no reseau in this project 
     private bool moveOnOff = false;
 
     // other
@@ -208,7 +212,8 @@ public class Character : Entity
             CameraBehaviour.instance.gameObject.SetActive(true);
             InputManager.main.gameObject.SetActive(true);
         }
-        //test spelltree
+        
+        //to spelltree
         spellUpgrade[0] = -1;
         spellUpgrade[1] = -1;
         spellUpgrade[2] = -1;
@@ -223,9 +228,6 @@ public class Character : Entity
             }
         }
 
-        //MarchandInventoryMake();
-
-        // useless now ?
         for (int i = 0; i < SpellLearn; i++)
         {
             if (spellPrefab[i] != null)
@@ -237,7 +239,7 @@ public class Character : Entity
         if (autoAttack) autoAttack = Instantiate(autoAttack, transform).Init(this);
 
 
-        // For Animation        
+        // Animation        
         animators = GetComponentsInChildren<Animator>();
 
         ConstitutionBase = constitutionBase;
@@ -355,7 +357,7 @@ public class Character : Entity
 
     public int SetXp { set => exp = value; }
 
-    // Reseau
+    // Reseau // not use
     public bool MoveOnOff { get => moveOnOff; set => moveOnOff = value; }
     public CHARACTER_HOSTILITY Hostility { get => hostility; set => hostility = value; }
     public Vector3 GetRotattion()
@@ -397,11 +399,12 @@ public class Character : Entity
     public ANIMATION_STATE Anim_state { get => anim_state; set => anim_state = value; }
     public Animator[] Animators { get => animators; set => animators = value; }
 
-    // Fct 
+    // Function
     protected virtual void Move()
     {
 
     }
+    
     public void GoForwardOrStop()
     {
         if (moveOnOff) navAgent.destination = (transform.position + (Vector3.forward / 3));
@@ -431,20 +434,7 @@ public class Character : Entity
                     break;
             }
         }
-        /*
-        if(Hostility == CHARACTER_HOSTILITY.ENEMY)
-        {
-            DamageStruct dmgstruct = new DamageStruct();
-            dmgstruct.amountDamag = 2;
-            //dmgstruct.amountHeal = 0;
-            //dmgstruct.criticalHit = 0;
-            //dmgstruct.dodged = false;
-            //dmgstruct.percArmor = false;
-            dmgstruct.emitter = this;
-           // ChangePv(dmgstruct);
-        }
-
-        */
+       
         if (animators == null)
         {
             animators = GetComponentsInChildren<Animator>();
@@ -536,7 +526,7 @@ public class Character : Entity
         {
             EndTurn();
             StartTurn();
-            //change pv remet le timer a 0
+            //change pv reset the timer 0
             if (timingTurn > Fight.turnTime) armor = ArmorMax; // Delegate to NewTurn out fight?
             timingTurn = 0;
         }
@@ -560,6 +550,7 @@ public class Character : Entity
         distCovered = 0f;
         OnNewTurn?.Invoke();
     }
+    
     public void EndTurn()
     {
         if (currentFight) State = CHARACTER_STATE.LOCKED;
@@ -588,6 +579,7 @@ public class Character : Entity
             makeObjToSell = true;
         }
     }
+    
     void ReactivateNavAgent()
     {
         reactivateAgent = true;
@@ -608,6 +600,7 @@ public class Character : Entity
             navAgent.enabled = true;
         }
     }
+    
     public void FightMovement()
     {
 
@@ -656,6 +649,7 @@ public class Character : Entity
                 }
             }
         }
+        
         if (dmgFeedBack.amountHeal > 0)
         {
             int previousHP = PV;
@@ -778,6 +772,7 @@ public class Character : Entity
         }
         return false;
     }
+    
     public bool Equip(Equipable _item, bool _rightHand, int _place = -1)
     {
         if (classe == _item.ClassRequired && level >= _item.LevelRequired)
@@ -811,14 +806,12 @@ public class Character : Entity
                         Body.gameObject.SetActive(true);
                         Body.transform.position = Vector3.forward + this.transform.position;
                         SceneManager.MoveGameObjectToScene(Body.gameObject, SceneManager.GetActiveScene());
-
                     }
                 }
                 _item.OnEquip?.Invoke(this);
                 Body = _item;
                 //DontDestroyOnLoad(_item.gameObject);
                 return true;
-
             }
             else if (_item as Weapon)
             {
@@ -836,7 +829,6 @@ public class Character : Entity
                     RightHand = _item;
                     // DontDestroyOnLoad(_item.gameObject);
                     return true;
-
                 }
                 else if (LeftHand != null && !_rightHand
                     && Classe == CLASSES.ASSASSIN)
@@ -848,7 +840,6 @@ public class Character : Entity
                         LeftHand.transform.position = Vector3.forward + this.transform.position;
                         SceneManager.MoveGameObjectToScene(LeftHand.gameObject, SceneManager.GetActiveScene());
                     }
-
 
                     _item.OnEquip?.Invoke(this);
                     LeftHand = _item;
@@ -890,7 +881,6 @@ public class Character : Entity
                     LeftHand.gameObject.SetActive(true);
                     LeftHand.transform.position = Vector3.forward + this.transform.position;
                     SceneManager.MoveGameObjectToScene(LeftHand.gameObject, SceneManager.GetActiveScene());
-
                 }
                 LeftHand = null;
             }
@@ -909,9 +899,7 @@ public class Character : Entity
 
                 }
                 Body = null;
-
             }
-
             return true;
         }
         else if (_item as Weapon)
@@ -958,6 +946,7 @@ public class Character : Entity
     {
         if (_obj.name == "Gold" || _obj.name == "Golds")
         {
+        //just stack gold
             Gold += _nb;
             AkSoundEngine.PostEvent("Gold_Play", gameObject); // Play Gold Sound
             return true;
@@ -1045,6 +1034,7 @@ public class Character : Entity
 
     private void OnTriggerEnter(Collider other)
     {
+        //uselfull for test
         //if (state == CHARACTER_STATE.FREE && !IsDead)
         //{
         //    Character character;
